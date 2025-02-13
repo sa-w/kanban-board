@@ -1,3 +1,4 @@
+'use client'
 import { TBoard, TCard, TColumn } from '@/shared/data';
 import { Board } from '@/shared/board';
 
@@ -17,7 +18,9 @@ function getInitialData(): TBoard {
     };
   })();
 
-  const columns: TColumn[] = [
+
+
+  let columns: TColumn[] = [
     /*{ id: 'column:a', title: 'Column A', cards: getCards({ amount: 0 }) },
     { id: 'column:b', title: 'Column B', cards: getCards({ amount: 0 }) },
     { id: 'column:c', title: 'Column C', cards: getCards({ amount: 0 }) },
@@ -28,6 +31,14 @@ function getInitialData(): TBoard {
     { id: 'column:h', title: 'Column H', cards: getCards({ amount: 0 }) },
     { id: 'column:i', title: 'Column I', cards: getCards({ amount: 0 }) },*/
   ];
+
+  {/*let storageData = localStorage.getItem("boards")
+
+  if(storageData === null){
+    localStorage.setItem("boards", JSON.stringify(columns));
+  } else {
+    columns = JSON.parse(storageData)
+  }*/}
 
   return {
     columns,

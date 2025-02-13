@@ -28,7 +28,7 @@ import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import { Button, SnackbarCloseReason } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, SnackbarCloseReason, Stack, TextField } from '@mui/material';
 import SimpleSnackbar from './simpleSnackBar';
 
 interface HandleClose {
@@ -395,6 +395,8 @@ export function Board({ initial }: { initial: TBoard }) {
         inputRef.current.value = ""; // Reset input
       }
 
+      localStorage.setItem("boards", JSON.stringify(tempBoard));
+
     }
 
 
@@ -412,10 +414,55 @@ export function Board({ initial }: { initial: TBoard }) {
           <Column key={column.id} column={column} />
         ))}
 
+<Card sx={{ minWidth: 275 }}>
+      <CardContent>
+
+      <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Column name"
+            inputProps={{ "aria-label": "Column name" }}
+            inputRef={inputRef}
+            onKeyUp={handleKeyUp} />
+
+<Box
+      component="form"
+      sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
+      noValidate
+      autoComplete="off"
+    >
+      <TextField id="outlined-basic" label="Name" variant="outlined" />
+      <Stack
+          direction="row"
+          sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+        >
+          
+          <Button size="small" component="div">Cancel</Button>
+          
+          <Button size="small" component="div">Add</Button>
+         
+
+          </Stack>
+    </Box>
+
+      </CardContent>
+      <CardActions>
+
+        
+      </CardActions>
+    </Card>
+
         {data.columns.length >= 5 ? null :<span>            <Paper
           component="form"
           sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 'auto' }}
         >
+
+
+
+
+
+
+
+
           <InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder="Column name"
