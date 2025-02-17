@@ -286,11 +286,6 @@ export function Column({ column, boardData, refresh }: { column: TColumn, boardD
 
   }
 
-  function rename(name: string){
-    column.title = name;
-    setKey((k) => k + 1)
-  }
-
   function clear(){
     column.cards = [];
     setKey((k) => k + 1)
@@ -304,14 +299,17 @@ export function Column({ column, boardData, refresh }: { column: TColumn, boardD
 
   function startAddCard(){
     setShowAddCard(true)
+    setShowRenameCard(false)
   }
 
   function cancelAddCard(){
     setShowAddCard(false)
+    setShowRenameCard(false)
   }
 
   function startRenameCard(){
     setShowRenameCard(true)
+    setShowAddCard(false)
     setAnchorEl(null);
   }
 
