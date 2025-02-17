@@ -45,6 +45,7 @@ export function Board({ initial }: { initial: TBoard }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [show, setShow] = useState(false)
   const [message, setMessage] = useState("")
+  const [showAddColumn, setShowAddColumn] = useState(false)
 
   const handleClose: HandleClose = (
     event,
@@ -57,9 +58,19 @@ export function Board({ initial }: { initial: TBoard }) {
     setShow(false)
   };
 
-  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  /*const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     setInputValue(event.currentTarget.value);
     console.log("Input value:", event.currentTarget.value);
+  };*/
+
+  /*const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    setInputValue(event.currentTarget.value);
+    console.log("Input value:", event.key);
+  };*/
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+    console.log("Input value:", event.target.value);
   };
 
   useEffect(() => {
@@ -374,6 +385,14 @@ export function Board({ initial }: { initial: TBoard }) {
     };
   }, []);
 
+  function startAddColumn(){
+    setShowAddColumn(true)
+  }
+
+  function cancelAddColumn(){
+    setShowAddColumn(false)
+  }
+
   function addColumn() {
     let tempCards: TCard[] = []
     let tempColumns: TColumn = {
@@ -414,15 +433,15 @@ export function Board({ initial }: { initial: TBoard }) {
           <Column key={column.id} column={column} />
         ))}
 
-<Card sx={{ minWidth: 275 }}>
+ {showAddColumn && <Card sx={{ minWidth: 275, height: '30%' }}>
       <CardContent>
 
-      <InputBase
+      {/*<InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder="Column name"
             inputProps={{ "aria-label": "Column name" }}
             inputRef={inputRef}
-            onKeyUp={handleKeyUp} />
+            onKeyUp={handleKeyUp} />*/}
 
 <Box
       component="form"
@@ -430,15 +449,21 @@ export function Board({ initial }: { initial: TBoard }) {
       noValidate
       autoComplete="off"
     >
-      <TextField id="outlined-basic" label="Name" variant="outlined" />
+      {/*<InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Column name"
+            inputProps={{ "aria-label": "Column name" }}
+            inputRef={inputRef}
+            onKeyUp={handleKeyUp} />*/}
+      <TextField id="outlined-basic" label="Name" inputRef={inputRef} onChange={handleChange} variant="outlined" />
       <Stack
           direction="row"
           sx={{ justifyContent: 'space-between', alignItems: 'center' }}
         >
           
-          <Button size="small" component="div">Cancel</Button>
+          <Button size="small" onClick={cancelAddColumn} component="div">Cancel</Button>
           
-          <Button size="small" component="div">Add</Button>
+          <Button size="small" onClick={addColumn} component="div">Add</Button>
          
 
           </Stack>
@@ -449,11 +474,11 @@ export function Board({ initial }: { initial: TBoard }) {
 
         
       </CardActions>
-    </Card>
+    </Card>}
 
         {data.columns.length >= 5 ? null :<span>            <Paper
           component="form"
-          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 'auto' }}
+          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 'auto', minWidth: 275 }}
         >
 
 
@@ -463,12 +488,12 @@ export function Board({ initial }: { initial: TBoard }) {
 
 
 
-          <InputBase
+          {/*<InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder="Column name"
             inputProps={{ "aria-label": "Column name" }}
             inputRef={inputRef}
-            onKeyUp={handleKeyUp} /><span><Button variant="text" onClick={addColumn}>Add Column</Button></span>
+            onKeyUp={handleKeyUp} /><span>*/}<Button sx={{margin: 'auto'}} variant="text" onClick={startAddColumn}>Add Column</Button>{/*</span>*/}
 
         </Paper></span>} 
       </div>

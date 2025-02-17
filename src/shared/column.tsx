@@ -30,7 +30,7 @@ import { blockBoardPanningAttr } from './data-attributes';
 import { isSafari } from './is-safari';
 import { isShallowEqual } from './is-shallow-equal';
 import { SettingsContext } from './settings-context';
-import { InputBase, SnackbarCloseReason } from '@mui/material';
+import { InputBase, SnackbarCloseReason, Stack, TextField } from '@mui/material';
 import SimpleSnackbar from './simpleSnackBar';
 
 import CardHeader from '@mui/material/CardHeader';
@@ -95,6 +95,8 @@ export function Column({ column }: { column: TColumn }) {
   const taskInputRef = useRef<HTMLInputElement | null>(null);
   const [show, setShow] = useState(false)
   const [message, setMessage] = useState("")
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [showAddCard, setShowAddCard] = useState(false)
 
   const handleCloseAlert: HandleClose = (
     event,
@@ -292,6 +294,14 @@ export function Column({ column }: { column: TColumn }) {
 
   }
 
+  function startAddCard(){
+    setShowAddCard(true)
+  }
+
+  function cancelAddCard(){
+    setShowAddCard(false)
+  }
+
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -346,14 +356,14 @@ export function Column({ column }: { column: TColumn }) {
                   </div>
                 ) : null}
               </div>
-              <div className="flex flex-row gap-2 p-3">
+              {/*<div className="flex flex-row gap-2 p-3">
                 <InputBase
                   sx={{ ml: 1, flex: 1, color: 'black' }}
                   placeholder="Add a task"
                   inputProps={{ "aria-label": "Add a task" }}
                   onKeyUp={handleKeyUp}
                   inputRef={taskInputRef} />
-              </div>
+              </div>*/}
               {/*<div className="flex flex-row gap-2 p-3">*/}
 
             {/*<button
@@ -366,13 +376,30 @@ export function Column({ column }: { column: TColumn }) {
             </button>*/}
 
 
+{showAddCard && <>
+  <div className="flex flex-row gap-2 p-3"><TextField id="outlined-basic" label="Name" sx={{width: 'auto'}} inputRef={inputRef} onKeyUp={handleKeyUp} variant="outlined" /></div><Stack
+                direction="row"
+                sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+              >
+
+                <Button size="small" onClick={cancelAddCard} component="div">Cancel</Button>
+
+                <Button size="small" onClick={addTask} component="div">Add</Button>
+
+
+              </Stack></>
+
+            }
+
 
             </CardContent>
 
 
             <CardActions className="border-t" disableSpacing sx={{ border: 'darkgray' }}>
+
+
               
-              <Button sx={{ margin: 'auto' }} onClick={addTask} variant="text">Add Card</Button>
+            {!showAddCard &&<Button sx={{ margin: 'auto' }} onClick={startAddCard} variant="text">Add Card</Button> }
               
             </CardActions>
            
