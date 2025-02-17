@@ -22,6 +22,7 @@ import {
   isColumnData,
   isDraggingACard,
   isDraggingAColumn,
+  TBoard,
   TCard,
   TCardData,
   TColumn,
@@ -82,7 +83,7 @@ const CardList = (function CardList({ column }: { column: TColumn }) {
   return column.cards.map((card) => <Cards key={card.id} card={card} columnId={column.id} />);
 });
 
-export function Column({ column }: { column: TColumn }) {
+export function Column({ column, boardData, refresh }: { column: TColumn, boardData: TBoard, refresh: () => void }) {
   const scrollableRef = useRef<HTMLDivElement | null>(null);
   const outerFullHeightRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
@@ -97,6 +98,7 @@ export function Column({ column }: { column: TColumn }) {
   const [message, setMessage] = useState("")
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [showAddCard, setShowAddCard] = useState(false)
+  const [showRenameCard, setShowRenameCard] = useState(false)
 
   const handleCloseAlert: HandleClose = (
     event,
@@ -112,6 +114,11 @@ export function Column({ column }: { column: TColumn }) {
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     setValue(event.currentTarget.value);
     console.log("Input value:", event.currentTarget.value);
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+    console.log("Input value:", event.target.value);
   };
 
   useEffect(() => {
@@ -264,15 +271,16 @@ export function Column({ column }: { column: TColumn }) {
     let newTempCard: TCard = {
       id: `${value}-${Date.now()}`, description: value
     }
+    console.log(`VALUE IS ${value}`)
     tempCards.push(newTempCard);
     let tempColumns = activeColumn;
     tempColumns.cards = tempCards
     column = tempColumns
     //setActiveColumn(tempColumns)
     setKey((k) => k + 1)
-    if (taskInputRef.current) {
-      console.log("Task added:", taskInputRef.current.value);
-      taskInputRef.current.value = ""; // Reset input
+    if (inputRef.current) {
+      console.log("Task added:", inputRef.current.value);
+      inputRef.current.value = ""; // Reset input
     }
     //}
 
@@ -289,9 +297,9 @@ export function Column({ column }: { column: TColumn }) {
   }
 
   function deleteColumn(){
-    
-    
-
+    let indice = boardData.columns.indexOf(column);
+    boardData.columns.splice(indice, 1)
+    refresh()
   }
 
   function startAddCard(){
@@ -300,6 +308,24 @@ export function Column({ column }: { column: TColumn }) {
 
   function cancelAddCard(){
     setShowAddCard(false)
+  }
+
+  function startRenameCard(){
+    setShowRenameCard(true)
+    setAnchorEl(null);
+  }
+
+  function cancelRenameCard(){
+    setShowRenameCard(false)
+  }
+
+  function renameCard(){
+    column.title = value
+    setKey((k) => k + 1)
+    if (inputRef.current) {
+      console.log("Task added:", inputRef.current.value);
+      inputRef.current.value = ""; // Reset input
+    }
   }
 
 
@@ -335,9 +361,7 @@ export function Column({ column }: { column: TColumn }) {
           </div>*/}
 
           <Card sx={{ maxWidth: 345 }} >
-            <BasicMenu anchorEl={anchorEl} open={open} handleClose={handleClose} rename={function (name: string): void {
-              throw new Error('Function not implemented.');
-            } } clear={clear} />
+            <BasicMenu anchorEl={anchorEl} open={open} handleClose={handleClose} rename={startRenameCard} clear={clear} deleteCol={deleteColumn} />
             <CardHeader className=" border-b flex flex-row items-center justify-between p-3 pb-2" ref={headerRef}
               action={<IconButton aria-label="settings" onClick={handleClick}>
                 <MoreVertIcon />
@@ -349,6 +373,24 @@ export function Column({ column }: { column: TColumn }) {
                 className="flex flex-col overflow-y-auto [overflow-anchor:none] [scrollbar-color:theme(colors.slate.600)_theme(colors.slate.700)] [scrollbar-width:thin]"
                 ref={scrollableRef}
               >
+
+{showRenameCard && <>
+  <div className="flex flex-row gap-2 p-3"><TextField id="outlined-basic" label="Name" sx={{width: 'auto'}} inputRef={inputRef} onChange={handleChange} variant="outlined" /></div><Stack
+                direction="row"
+                sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+              >
+
+                <Button size="small" onClick={cancelRenameCard} component="div">Cancel</Button>
+
+                <Button size="small" onClick={renameCard} component="div">Add</Button>
+
+
+              </Stack></>
+
+            }
+
+
+
                 <CardList column={column} />
                 {state.type === 'is-card-over' && !state.isOverChildCard ? (
                   <div className="flex-shrink-0 px-3 py-1">
@@ -377,7 +419,7 @@ export function Column({ column }: { column: TColumn }) {
 
 
 {showAddCard && <>
-  <div className="flex flex-row gap-2 p-3"><TextField id="outlined-basic" label="Name" sx={{width: 'auto'}} inputRef={inputRef} onKeyUp={handleKeyUp} variant="outlined" /></div><Stack
+  <div className="flex flex-row gap-2 p-3"><TextField id="outlined-basic" label="Name" sx={{width: 'auto'}} inputRef={inputRef} onChange={handleChange} variant="outlined" /></div><Stack
                 direction="row"
                 sx={{ justifyContent: 'space-between', alignItems: 'center' }}
               >

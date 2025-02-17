@@ -421,6 +421,10 @@ export function Board({ initial }: { initial: TBoard }) {
 
   }
 
+  function refreshBoard(){
+    setKey((k) => k + 1)
+  }
+
   return (
     <><SimpleSnackbar close={handleClose} message={message} show={show} /><div className={`flex h-full flex-col ${settings.isBoardMoreObvious ? 'px-32 py-20' : ''}`}>
 
@@ -430,7 +434,7 @@ export function Board({ initial }: { initial: TBoard }) {
       >
 
         {data.columns.map((column) => (
-          <Column key={column.id} column={column} />
+          <Column key={column.id} column={column} boardData={data} refresh={refreshBoard} />
         ))}
 
  {showAddColumn && <Card sx={{ minWidth: 275, height: '30%' }}>
